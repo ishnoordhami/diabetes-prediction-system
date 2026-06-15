@@ -3,7 +3,7 @@ import pickle
 import numpy as np
 
 st.set_page_config(page_title="Diabetes Predictor", layout="centered")
-st.title("🩺 Diabetes Risk Prediction App")
+st.title("🩺 Diabetes Risk Prediction System")
 st.write("Enter the patient's metrics below to predict diabetes risk.")
 
 @st.cache_resource
@@ -13,7 +13,7 @@ def load_model():
 
 model = load_model()
 
-st.subheader("Patient Clinical & Lifestyle Data")
+st.subheader("🩺 Diabetes Risk Prediction System")
 
 col1, col2 = st.columns(2)
 
