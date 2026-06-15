@@ -2,12 +2,10 @@ import streamlit as st
 import pickle
 import numpy as np
 
-# 1. Set up the web page title and description
 st.set_page_config(page_title="Diabetes Predictor", layout="centered")
-st.title("🩺 Diabetes Risk Prediction System")
-st.write("Enter the patient's clinical metrics below to predict diabetes risk.")
+st.title("🩺 Diabetes Risk Prediction App")
+st.write("Enter the patient's metrics below to predict diabetes risk.")
 
-# 2. Load your pre-trained Random Forest model
 @st.cache_resource
 def load_model():
     with open("model.pkl", "rb") as file:
@@ -15,31 +13,40 @@ def load_model():
 
 model = load_model()
 
-# 3. Create input fields for your data metrics
-# Note: Adjust these field names to match the exact features your model expects!
-st.subheader("Patient Clinical Data")
+st.subheader("Patient Clinical & Lifestyle Data")
 
 col1, col2 = st.columns(2)
 
 with col1:
-    glucose = st.number_input("Glucose Level:", min_value=0, max_value=300, value=120)
-    blood_pressure = st.number_input("Blood Pressure (mm Hg):", min_value=0, max_value=200, value=70)
-    bmi = st.number_input("BMI (Body Mass Index):", min_value=0.0, max_value=70.0, value=25.0)
+    hba1c = st.number_input("HbA1c Level (%):", min_value=3.0, max_value=15.0, value=5.7, step=0.1)
+    glucose_fasting = st.number_input("Fasting Glucose Level (mg/dL):", min_value=50, max_value=400, value=100)
+    bmi = st.number_input("BMI (Body Mass Index):", min_value=10.0, max_value=70.0, value=25.0, step=0.1)
+    age = st.number_input("Age:", min_value=1, max_value=120, value=35)
 
 with col2:
-    insulin = st.number_input("Insulin Level (mu U/ml):", min_value=0, max_value=900, value=80)
-    age = st.number_input("Age of the Patient:", min_value=0, max_value=120, value=35)
+    physical_activity = st.number_input("Physical Activity (minutes/week):", min_value=0, max_value=1000, value=150)
 
-# 4. Predict button and output logic
+    gender_input = st.selectbox("Gender:", ["Female", "Male"])
+    gender = 1 if gender_input == "Male" else 0
+    
+    family_history_input = st.selectbox("Family History of Diabetes:", ["No", "Yes"])
+    family_history_diabetes = 1 if family_history_input == "Yes" else 0
+
 st.markdown("---")
 if st.button("Predict Diabetes Risk", use_container_width=True):
-    # Match the exact feature arrangement your model was trained on
-    features = np.array([[glucose, blood_pressure, bmi, insulin, age]])
     
-    # Generate prediction
+    features = np.array([[
+        hba1c, 
+        glucose_fasting, 
+        bmi, 
+        age, 
+        physical_activity, 
+        gender, 
+        family_history_diabetes
+    ]])
+    
     prediction = model.predict(features)
     
-    # Display the final layout result
     if prediction[0] == 1:
         st.error("⚠️ High Risk: The model predicts the patient is likely to have diabetes.")
     else:
