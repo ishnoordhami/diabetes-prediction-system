@@ -13,7 +13,7 @@ def load_model():
 
 model = load_model()
 
-st.subheader("🩺 Diabetes Risk Prediction System")
+st.subheader("Patient Clinical & Lifestyle Data")
 
 col1, col2 = st.columns(2)
 
